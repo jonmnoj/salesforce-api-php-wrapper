@@ -278,6 +278,36 @@ class Client
     }
 
     /**
+     * @return AccessToken $accessToken
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @param TokenStore\LocalFileConfigInterface $config
+     */
+    public function saveAccessToken(\Crunch\Salesforce\TokenStore\LocalFileConfigInterface $config)
+    {
+        $tokenStore = new \Crunch\Salesforce\TokenStore\LocalFile(new \Crunch\Salesforce\AccessTokenGenerator, $config);
+        $tokenStore->saveAccessToken($this->accessToken);
+    }
+
+    /**
+     * @param TokenStore\LocalFileConfigInterface $config
+     */
+    public function fetchAccessToken(\Crunch\Salesforce\TokenStore\LocalFileConfigInterface $config)
+    {
+        $tokenStore = new \Crunch\Salesforce\TokenStore\LocalFile(new \Crunch\Salesforce\AccessTokenGenerator, $config);
+        if ($tokenStore->exists()) {
+            $this->setAccessToken($tokenStore->fetchAccessToken());
+            return $this->accessToken;
+        }
+        return null;
+    }
+
+    /**
      * @param string $method
      * @param string $url
      * @param array  $data
