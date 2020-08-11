@@ -60,4 +60,12 @@ class LocalFile implements StoreInterface
     {
         file_put_contents($this->filePath . '/' . $this->fileName, $accessToken->toJson());
     }
+
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return file_exists($this->filePath . '/' . $this->fileName);
+    }
 }
