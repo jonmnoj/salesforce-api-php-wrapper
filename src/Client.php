@@ -183,6 +183,27 @@ class Client
         return $responseBody['id'];
     }
 
+
+    /**
+     * Create a new object in salesforce
+     *
+     * @param string $object
+     * @param array|object $data
+     * @return string The id of the newly created record
+     * @throws \Exception
+     */
+    public function describe($object)
+    {
+        $url = $this->generateUrl('sobjects/'. $object . '/describe/');
+
+        $response     = $this->makeRequest('get', $url, [
+            'headers' => ['Content-Type' => 'application/json', 'Authorization' => $this->getAuthHeader()]
+        ]);
+        $responseBody = json_decode($response->getBody(), true);
+
+        return $responseBody;
+    }
+
     /**
      * Delete an object with th specified id
      *
