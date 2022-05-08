@@ -1,6 +1,5 @@
 <?php namespace Crunch\Salesforce;
 
-use Carbon\Carbon;
 
 class AccessTokenGenerator {
 
@@ -16,9 +15,9 @@ class AccessTokenGenerator {
 
         $id = $savedToken['id'];
 
-        $dateIssued = Carbon::parse($savedToken['dateIssued']);
+        $dateIssued = new \DateTimeImmutable($savedToken['dateIssued']);
 
-        $dateExpires = Carbon::parse($savedToken['dateExpires']);
+        $dateExpires = new \DateTimeImmutable($savedToken['dateExpires']);
 
         $scope = $savedToken['scope'];
 
@@ -56,9 +55,9 @@ class AccessTokenGenerator {
     public function createFromSalesforceResponse(array $salesforceToken)
     {
 
-        $dateIssued = is_numeric($salesforceToken['issued_at']) ? Carbon::createFromTimestamp((int)($salesforceToken['issued_at'] / 1000)) : Carbon::now();
+        $dateIssued = is_numeric($salesforceToken['issued_at']) ? \DateTimeImmutable::createFromFormat('U',(int)($salesforceToken['issued_at'] / 1000)) : new \DateTimeImmutable();
 
-        $dateExpires = $dateIssued->copy()->addHour()->subMinutes(5);
+        $dateExpires = new \DateTimeImmutable($dateIssued->modify('+55 minutes')->format('Y-m-d H:i:s'));
 
         $id = $this->getKeyIfSet($salesforceToken, 'id');
 

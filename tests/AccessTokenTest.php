@@ -5,8 +5,8 @@ class AccessTokenTest extends TestCase {
     /** @test */
     public function can_create_access_token()
     {
-        $issueDate  = \Carbon\Carbon::now();
-        $expiryDate = \Carbon\Carbon::now()->addHour();
+        $issueDate  = new DateTimeImmutable();
+        $expiryDate = new DateTimeImmutable('+1 hour');
 
         $token = new \Crunch\Salesforce\AccessToken(
             'abc123',
@@ -27,8 +27,8 @@ class AccessTokenTest extends TestCase {
         $this->assertEquals('http://example.com', $token->getApiUrl());
         $this->assertEquals('scopes', $token->getScope());
 
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateExpires());
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateIssued());
+        $this->assertInstanceOf(DateTimeImmutable::class, $token->getDateExpires());
+        $this->assertInstanceOf(DateTimeImmutable::class, $token->getDateIssued());
     }
 
     /** @test */
@@ -36,8 +36,8 @@ class AccessTokenTest extends TestCase {
     {
         $token1 = new \Crunch\Salesforce\AccessToken(
             'abc123',
-            \Carbon\Carbon::now(),
-            \Carbon\Carbon::now()->addHour(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable('+1 hour'),
             'scopes',
             'type',
             'refresh-token',
@@ -49,8 +49,8 @@ class AccessTokenTest extends TestCase {
 
         $token2 = new \Crunch\Salesforce\AccessToken(
             'abc123',
-            \Carbon\Carbon::now()->subHours(2),
-            \Carbon\Carbon::now()->subHour(),
+            new DateTimeImmutable('-2 hour'),
+            new DateTimeImmutable('-1 hour'),
             'scopes',
             'type',
             'refresh-token',
@@ -66,8 +66,8 @@ class AccessTokenTest extends TestCase {
     {
         $token = new \Crunch\Salesforce\AccessToken(
             'abc123',
-            \Carbon\Carbon::now(),
-            \Carbon\Carbon::now()->addHour(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable('+1 hour'),
             'scopes',
             'type',
             'refresh-token',
@@ -87,8 +87,8 @@ class AccessTokenTest extends TestCase {
     {
         $token = new \Crunch\Salesforce\AccessToken(
             'abc123',
-            \Carbon\Carbon::now(),
-            \Carbon\Carbon::now()->addHour(),
+            new DateTimeImmutable(),
+            new DateTimeImmutable('+1 hour'),
             'scopes',
             'type',
             'refresh-token',
@@ -107,10 +107,10 @@ class AccessTokenTest extends TestCase {
         ]);
 
         $this->assertEquals('new-access-token', $token->getAccessToken(), 'access token was updated');
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateExpires());
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateIssued());
+        $this->assertInstanceOf(DateTimeImmutable::class, $token->getDateExpires());
+        $this->assertInstanceOf(DateTimeImmutable::class, $token->getDateIssued());
 
-        $this->assertEquals($time, $token->getDateIssued()->timestamp, 'Timestamp saved and converted correctly');
+        $this->assertEquals($time, $token->getDateIssued()->getTimestamp(), 'Timestamp saved and converted correctly');
 
     }
 }

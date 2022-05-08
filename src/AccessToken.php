@@ -1,6 +1,5 @@
 <?php namespace Crunch\Salesforce;
 
-use Carbon\Carbon;
 
 class AccessToken
 {
@@ -11,12 +10,12 @@ class AccessToken
     private $id;
 
     /**
-     * @var \Carbon\Carbon
+     * @var \DateTimeImmutable
      */
     private $dateIssued;
 
     /**
-     * @var \Carbon\Carbon
+     * @var \DateTimeImmutable
      */
     private $dateExpires;
 
@@ -52,8 +51,8 @@ class AccessToken
 
     /**
      * @param string         $id
-     * @param \Carbon\Carbon $dateIssued
-     * @param \Carbon\Carbon $dateExpires
+     * @param \DateTimeImmutable $dateIssued
+     * @param \DateTimeImmutable $dateExpires
      * @param array          $scope
      * @param string         $tokenType
      * @param string         $refreshToken
@@ -86,9 +85,9 @@ class AccessToken
 
     public function updateFromSalesforceRefresh(array $salesforceToken)
     {
-        $this->dateIssued = Carbon::createFromTimestamp((int)($salesforceToken['issued_at'] / 1000));
+        $this->dateIssued = \DateTimeImmutable::createFromFormat('U', (int)($salesforceToken['issued_at'] / 1000));
 
-        $this->dateExpires = $this->dateIssued->copy()->addHour()->subMinutes(5);
+        $this->dateExpires = new \DateTimeImmutable($this->dateIssued->modify('+55 minutes')->format('Y-m-d H:i:s'));
 
         $this->signature = $salesforceToken['signature'];
 
@@ -100,7 +99,7 @@ class AccessToken
      */
     public function needsRefresh()
     {
-        return $this->dateExpires->lt(Carbon::now());
+        return $this->dateExpires < new \DateTime();
     }
 
 
@@ -140,7 +139,7 @@ class AccessToken
     }
 
     /**
-     * @return Carbon
+     * @return \DateTimeImmutable
      */
     public function getDateExpires()
     {
@@ -148,7 +147,7 @@ class AccessToken
     }
 
     /**
-     * @return Carbon
+     * @return \DateTimeImmutable
      */
     public function getDateIssued()
     {

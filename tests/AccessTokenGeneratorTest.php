@@ -76,9 +76,9 @@ class AccessTokenGeneratorTest extends TestCase
         $tokenGenerator = new \Crunch\Salesforce\AccessTokenGenerator();
         $token = $tokenGenerator->createFromSalesforceResponse($responseData);
 
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateIssued(), 'Token issued date not a carbon instance');
-        $this->assertEquals($time, $token->getDateIssued()->timestamp, 'Token issue timestamp doesnt match');
-        $this->assertEquals($time + (60*55), $token->getDateExpires()->timestamp, 'Token expiry time not 55 minutes after creation');
+        $this->assertInstanceOf(DateTimeImmutable::class, $token->getDateIssued(), 'Token issued date not a DateTimeImmutable instance');
+        $this->assertEquals($time, $token->getDateIssued()->getTimestamp(), 'Token issue timestamp doesnt match');
+        $this->assertEquals($time + (60*55), $token->getDateExpires()->getTimestamp(), 'Token expiry time not 55 minutes after creation');
     }
 
     /** @test */
@@ -100,7 +100,7 @@ class AccessTokenGeneratorTest extends TestCase
         $tokenGenerator = new \Crunch\Salesforce\AccessTokenGenerator();
         $token = $tokenGenerator->createFromJson($jsonToken);
 
-        $this->assertInstanceOf(\Carbon\Carbon::class, $token->getDateIssued(), 'Token issued date not a carbon instance');
+        $this->assertInstanceOf(DateTime::class, $token->getDateIssued(), 'Token issued date not a DateTimeImmutable instance');
         $this->assertEquals($issueDate, $token->getDateIssued()->format('Y-m-d H:i:s'), 'Token issue timestamp doesnt match');
         $this->assertEquals($expiryDate, $token->getDateExpires()->format('Y-m-d H:i:s'), 'Token expiry time not 1 hour after creation');
     }
